@@ -8,7 +8,7 @@
     var channel = (this.channels[channelName] || []),
         i = channel.length;
     while (i--) {
-      channel[i].apply([], [].slice.call(arguments));
+      channel[i].apply([], [].slice.call(arguments, 1));
     }
   }
   // TODO: Work in unsubscribing
