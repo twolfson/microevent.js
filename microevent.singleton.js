@@ -1,5 +1,6 @@
 {
-  'channels': [], // Define the channels
+  // Define the channels
+  'channels': {},
   'on': function (channelName, fn) {
     // Fallback the channel and add the function
     (this.channels[channelName] = this.channels[channelName] || []).push(fn);
