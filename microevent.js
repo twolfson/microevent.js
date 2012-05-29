@@ -11,21 +11,26 @@
 
 function MicroEvent() {}
 MicroEvent.prototype = {
-  on: function(event, fct){
-    this._events = this._events || {};
-    this._events[event] = this._events[event] || [];
-    this._events[event].push(fct);
+  on: function (channel, fn) {
+    var events = this._events = this._events || {};
+    (events[channel] = events[channel] || []).push(fn);
   },
-  off: function(event, fct){
-    this._events = this._events || {};
-    if (event in this._events === false) { return; }
-    this._events[event].splice(this._events[event].indexOf(fct), 1);
+  off: function (channel, fn) {
+    var events = this._events = this._events || {},
+        channelFns = events[channel] || [],
+        i = channelFns.length;
+    while (i--) {
+      if (channelFns[i] === fn) {
+        channelFns.splice(i, 1);
+      }
+    }
   },
-  trigger: function(event /* , args... */){
-    this._events = this._events || {};
-    if( event in this._events === false  )  return;
-    for(var i = 0; i < this._events[event].length; i++){
-      this._events[event][i].apply(this, Array.prototype.slice.call(arguments, 1))
+  trigger: function(channel /* , args... */){
+    var events = this._events = this._events || {},
+        channelFns = (events[channel] || []).slice(),
+        fn;
+    while (fn = channelFns.pop()) {
+      fn.apply(this, [].slice.call(arguments, 1))
     }
   }
 };
@@ -39,13 +44,9 @@ MicroEvent.prototype = {
 */
 MicroEvent.mixin = function (destObject) {
   var props  = ['on', 'off', 'trigger'],
-      targetObj = destObject.prototype || destObject;
-  for(var i = 0; i < props.length; i ++){
+      targetObj = destObject.prototype || destObject,
+      i = 0;
+  for(; i < props.length; i++){
     targetObj[props[i]] = MicroEvent.prototype[props[i]];
   }
 };
-
-// export in common js
-if (typeof module !== "undefined" && ('exports' in module)) {
-  module.exports = MicroEvent;
-}
