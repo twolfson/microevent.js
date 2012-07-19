@@ -25,7 +25,7 @@ MicroEvent.prototype = {
       }
     }
   },
-  trigger: function(channel /* , args... */){
+  emit: function(channel /* , args... */){
     var events = this._events = this._events || {},
         channelFns = (events[channel] || []).slice(),
         fn;
@@ -43,7 +43,7 @@ MicroEvent.prototype = {
  * @param {Object} the object which will support MicroEvent
 */
 MicroEvent.mixin = function (destObject) {
-  var props  = ['on', 'off', 'trigger'],
+  var props  = ['on', 'off', 'emit'],
       targetObj = destObject.prototype || destObject,
       i = 0;
   for(; i < props.length; i++){
